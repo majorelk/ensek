@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="API Test Suite">
+    <test name="All Tests">
+        <groups>
+            <run>
+                <include name="Positive" />
+                <include name="Negative" />
+                <include name="Auth" />
+                <!-- You can choose which groups to include in this test run -->
+            </run>
+        </groups>
+        <classes>
+            <class name="com.ensek.Api.EnsekApiTests" />
+            <!-- Add more classes if needed -->
+        </classes>
+    </test>
+</suite>
