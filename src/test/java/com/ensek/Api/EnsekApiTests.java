@@ -10,7 +10,6 @@ import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.testng.
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
