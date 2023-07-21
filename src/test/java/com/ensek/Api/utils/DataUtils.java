@@ -1,4 +1,4 @@
-package com.ensek.utils;
+package com.ensek.Api.utils;
 
 import io.restassured.response.Response;
 

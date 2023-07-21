@@ -1,5 +1,6 @@
 package com.ensek.Api;
 
+import com.ensek.Api.utils.RestAssuredUtils;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
@@ -9,7 +10,7 @@ import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import com.ensek.utils.*;
+import org.testng.
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
