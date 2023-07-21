@@ -200,8 +200,8 @@ public class EnsekApiTests {
 
     @Test(groups = "Auth")
     public void testUnauthorizedLogin() {
-        String invalidUsername = "invaliduser";
-        String invalidPassword = "invalidpassword";
+        String invalidUsername = "invalidUser";
+        String invalidPassword = "invalidPassword";
 
         given()
                 .spec(requestSpec)
