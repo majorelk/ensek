@@ -6,6 +6,7 @@ import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import com.ensek.utils.*;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -96,42 +97,98 @@ public class EnsekApiTests {
 
     @Test(groups = "Negative")
     public void testInvalidBuyFuel() {
-        // Test implementation for negative buy fuel scenario
+        int invalidId = -1;
+        int invalidQuantity = -10;
+
+        given()
+                .spec(requestSpec)
+                .pathParam("id", invalidId)
+                .pathParam("quantity", invalidQuantity)
+                .when()
+                .put("/ENSEK/buy/{id}/{quantity}")
+                .then()
+                .statusCode(400);
     }
 
     @Test(groups = "Negative")
     public void testUnauthorizedAccess() {
-        // Test implementation for negative unauthorized access scenario
+        String invalidToken = "INVALID_TOKEN";
+        RequestSpecification requestSpecWithInvalidToken = RestAssuredUtils.getRequestSpecificationWithInvalidToken(requestSpec, invalidToken);
+
+        given()
+                .spec(requestSpecWithInvalidToken)
+                .when()
+                .get("/ENSEK/orders")
+                .then()
+                .statusCode(401);
     }
 
     @Test(groups = "Negative")
     public void testBuyMoreThanAvailable() {
-        // Test implementation for negative buy more than available scenario
+        // You need to get the available quantity for the given fuel ID and test buying more than that.
+        // Use the DataUtils class to fetch the available quantity based on the fuel ID from the Swagger model.
+        // Then use RestAssured to test the buy fuel API with a quantity greater than the available quantity.
     }
 
     @Test(groups = "Negative")
     public void testBuyWhenOutOfStock() {
-        // Test implementation for negative buy when out of stock scenario
+        // Similar to the previous test, but this time set the available quantity to 0 and test buying the fuel.
     }
 
     @Test(groups = "Auth")
     public void testUnauthorizedLogin() {
-        // Test implementation for unauthorized login scenario
+        String invalidUsername = "invaliduser";
+        String invalidPassword = "invalidpassword";
+
+        given()
+                .spec(requestSpec)
+                .body("{\"username\": \"" + invalidUsername + "\", \"password\": \"" + invalidPassword + "\"}")
+                .when()
+                .post("/ENSEK/login")
+                .then()
+                .statusCode(401);
     }
 
     @Test(groups = "Auth")
     public void testInvalidTokenAccess() {
-        // Test implementation for invalid token access scenario
+        String invalidToken = "INVALID_TOKEN";
+        RequestSpecification requestSpecWithInvalidToken = RestAssuredUtils.getRequestSpecificationWithInvalidToken(requestSpec, invalidToken);
+
+        given()
+                .spec(requestSpecWithInvalidToken)
+                .when()
+                .get("/ENSEK/orders")
+                .then()
+                .statusCode(401);
     }
 
     @Test(groups = "Edge")
     public void testBuyZeroFuel() {
-        // Test implementation for edge case of buying zero fuel
+        int fuelId = 1;
+        int zeroQuantity = 0;
+
+        given()
+                .spec(requestSpec)
+                .pathParam("id", fuelId)
+                .pathParam("quantity", zeroQuantity)
+                .when()
+                .put("/ENSEK/buy/{id}/{quantity}")
+                .then()
+                .statusCode(200);
+        // Add assertions to verify the response body if required
     }
 
     @Test(groups = "Edge")
     public void testGetOrderByIdNotFound() {
-        // Test implementation for edge case of getting order by non-existent ID
+        String nonExistentOrderId = "NON_EXISTENT_ORDER_ID";
+
+        given()
+                .spec(requestSpec)
+                .pathParam("orderId", nonExistentOrderId)
+                .when()
+                .get("/ENSEK/orders/{orderId}")
+                .then()
+                .statusCode(404);
     }
 
     // DataProvider method for "testBuyFuel" test

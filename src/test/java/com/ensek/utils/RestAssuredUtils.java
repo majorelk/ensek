@@ -21,4 +21,20 @@ public class RestAssuredUtils {
     public static RequestSpecification getRequestSpecification() {
         return requestSpec;
     }
+
+    private static final String INVALID_TOKEN = "INVALID_ACCESS_TOKEN";
+
+    // Method to get a RequestSpecification object with a valid access token
+    public static RequestSpecification getRequestSpecificationWithValidToken() {
+        String validAccessToken = "YOUR_VALID_ACCESS_TOKEN"; // Replace with your actual valid access token
+        return new RequestSpecBuilder()
+                .addHeader("Authorization", "Bearer " + validAccessToken)
+                .build();
+    }
+
+    public static RequestSpecification getRequestSpecificationWithInvalidToken(RequestSpecification requestSpec, String invalidToken) {
+        return new RequestSpecBuilder()
+                .addHeader("Authorization", "Bearer " + INVALID_TOKEN)
+                .build();
+    }
 }

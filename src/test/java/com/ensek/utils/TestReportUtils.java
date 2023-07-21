@@ -9,5 +9,5 @@ public class TestReportUtils {
         System.out.println("Test: " + result.getMethod().getMethodName() + " - Status: " + result.getStatus());
     }
 
-    // Add more custom reporting methods as per your requirements
+    // Add more custom reporting methods as needed
 }
