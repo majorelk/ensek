@@ -2,6 +2,9 @@ package com.ensek.Api;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -11,8 +14,12 @@ import com.ensek.utils.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
+import java.util.List;
+import java.util.Map;
+
 public class EnsekApiTests {
 
+    private static final int YOUR_FUEL_ID = 123;
     private RequestSpecification requestSpec;
 
     @BeforeClass
@@ -125,14 +132,70 @@ public class EnsekApiTests {
 
     @Test(groups = "Negative")
     public void testBuyMoreThanAvailable() {
-        // You need to get the available quantity for the given fuel ID and test buying more than that.
-        // Use the DataUtils class to fetch the available quantity based on the fuel ID from the Swagger model.
-        // Then use RestAssured to test the buy fuel API with a quantity greater than the available quantity.
+        // Get the list of energy types
+        Response response = given()
+                .spec(requestSpec)
+                .when()
+                .get("/ENSEK/energy");
+
+        // Extract the energy types JSON response as a String
+        String responseBody = response.getBody().asString();
+
+        // Parse the JSON response using JsonPath
+        JsonPath jsonPath = new JsonPath(responseBody);
+
+        // Choose a fuel ID (replace 'YOUR_FUEL_ID' with the desired fuel ID to test)
+        int fuelId = YOUR_FUEL_ID;
+
+        // Fetch the available quantity for the selected fuel ID
+        int availableQuantity = jsonPath.getInt("findAll { it.id == " + fuelId + " }.quantity_available");
+
+        // Test buying more than the available quantity
+        given()
+                .spec(requestSpec)
+                .pathParam("id", fuelId)
+                .pathParam("quantity", availableQuantity + 1)
+                .when()
+                .put("/ENSEK/buy/{id}/{quantity}")
+                .then()
+                .statusCode(400);
     }
 
     @Test(groups = "Negative")
     public void testBuyWhenOutOfStock() {
-        // Similar to the previous test, but this time set the available quantity to 0 and test buying the fuel.
+        // Get the list of energy types
+        Response response = given()
+                .spec(requestSpec)
+                .when()
+                .get("/ENSEK/energy");
+
+        // Parse the JSON response using JsonPath
+        JsonPath jsonPath = response.jsonPath();
+
+        // Choose a fuel ID (replace 'YOUR_FUEL_ID' with the desired fuel ID to test)
+        int fuelId = 10112;
+
+        // Set the available quantity for the selected fuel ID to 0
+        List<Map<String, Object>> energyTypes = jsonPath.getList("energyTypes");
+        for (Map<String, Object> energyType : energyTypes) {
+            if ((int) energyType.get("id") == fuelId) {
+                energyType.put("quantity_available", 0);
+                break;
+            }
+        }
+
+        // Convert the updated JSON response back to a string
+        String updatedResponseBody = jsonPath.prettify();
+
+        // Test buying when the fuel is out of stock (quantity = 0)
+        given()
+                .spec(requestSpec)
+                .contentType(ContentType.JSON)
+                .body(updatedResponseBody)
+                .when()
+                .put("/ENSEK/energy")
+                .then()
+                .statusCode(400);
     }
 
     @Test(groups = "Auth")
