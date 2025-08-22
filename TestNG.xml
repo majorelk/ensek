@@ -1,17 +1,76 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="API Test Suite">
-    <test name="All Tests">
+<suite name="Ensek API Test Suite" verbose="1" parallel="false" thread-count="1">
+    
+    <!-- Listeners for enhanced reporting -->
+    <listeners>
+        <listener class-name="org.testng.reporters.XMLReporter"/>
+        <listener class-name="org.testng.reporters.JUnitReportReporter"/>
+    </listeners>
+    
+    <!-- Test: Positive Scenarios -->
+    <test name="Positive Tests" preserve-order="true">
         <groups>
             <run>
-                <include name="Positive" />
-                <include name="Negative" />
-                <include name="Auth" />
-                <!-- You can choose which groups to include in this test run -->
+                <include name="Positive"/>
+                <include name="Setup"/>
             </run>
         </groups>
         <classes>
-            <class name="com.ensek.Api.EnsekApiTests" />
-            <!-- Add more classes if needed -->
+            <class name="com.ensek.Api.EnsekApiTestsRefactored"/>
         </classes>
     </test>
+    
+    <!-- Test: Negative Scenarios -->
+    <test name="Negative Tests">
+        <groups>
+            <run>
+                <include name="Negative"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.ensek.Api.EnsekApiTestsRefactored"/>
+        </classes>
+    </test>
+    
+    <!-- Test: Authentication Tests -->
+    <test name="Authentication Tests">
+        <groups>
+            <run>
+                <include name="Authentication"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.ensek.Api.EnsekApiTestsRefactored"/>
+        </classes>
+    </test>
+    
+    <!-- Test: Edge Cases -->
+    <test name="Edge Case Tests">
+        <groups>
+            <run>
+                <include name="Edge"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.ensek.Api.EnsekApiTestsRefactored"/>
+        </classes>
+    </test>
+    
+    <!-- Test: Full Regression Suite -->
+    <test name="Full Regression Suite" enabled="false">
+        <groups>
+            <run>
+                <include name="Positive"/>
+                <include name="Negative"/>
+                <include name="Authentication"/>
+                <include name="Edge"/>
+                <include name="Setup"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.ensek.Api.EnsekApiTestsRefactored"/>
+            <class name="com.ensek.Api.EnsekApiTests"/>
+        </classes>
+    </test>
+    
 </suite>
